@@ -37,7 +37,7 @@ foreach ($l in $lines) { [void]$queue.Add($l.Trim()) }
 $tries = @{}
 $master = Join-Path $OutDir "master.jsonl"
 if (Test-Path $master) { Remove-Item $master -Force }
-$round = 0; $done = 0
+$round = 0; $done = 0; $deadRounds = 0
 
 function Run-Chunk($batch, $acct, $tag, $bid) {
   $list = Join-Path $OutDir "list_$tag.txt"
@@ -78,6 +78,11 @@ while ($queue.Count -gt 0 -and $round -lt 500) {
       Add-Content -Path $master -Value $line
       $recs[$r.email] = $r
     }
+  }
+  if ($recs.Count -eq 0) { $deadRounds++ } else { $deadRounds = 0 }
+  if ($deadRounds -ge 3) {
+    Write-Output "STOP: 3 rounds with no records (pool dead)"
+    break
   }
 
   $requeue = 0
