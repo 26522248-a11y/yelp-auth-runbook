@@ -1,0 +1,6 @@
+alpha@example.com:Passw0rd!
+bravo@example.com:letmein123
+charlie@example.com:Qwerty!2026
+delta@example.com:Sunshine9
+echo@example.com:Tr0ub4dor&3
+foxtrot@example.com:CorrectHorse1

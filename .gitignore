@@ -1,0 +1,16 @@
+runs/
+chunks/
+*.jsonl
+!examples/*.jsonl
+*.csv
+*.log
+hits.txt
+state.txt
+missed.txt
+proxies.txt
+proxies*.txt
+pool*.txt
+combo*.txt
+!examples/combo.sample.txt
+classified.csv
+node_modules/
