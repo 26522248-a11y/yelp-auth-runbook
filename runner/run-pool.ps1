@@ -16,7 +16,8 @@ param(
   [string]$ProxyHost = "pr.oxylabs.io",
   [int]$ProxyPort = 7777,
   [string]$PuSuffix = "-sesstime-1800",
-  [string]$OutDir = ".\runs"
+  [string]$OutDir = ".\runs",
+  [string]$RunTag = (Get-Date -Format "yyyyMMdd-HHmmss")
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,7 +36,7 @@ if ($lines.Count -eq 0) { throw "empty slice: $Source" }
 $queue = [System.Collections.ArrayList]::new()
 foreach ($l in $lines) { [void]$queue.Add($l.Trim()) }
 $tries = @{}
-$master = Join-Path $OutDir "master.jsonl"
+$master = Join-Path $OutDir "master-$RunTag.jsonl"
 if (Test-Path $master) { Remove-Item $master -Force }
 $round = 0; $done = 0; $deadRounds = 0
 
@@ -62,7 +63,7 @@ while ($queue.Count -gt 0 -and $round -lt 500) {
   for ($w = 0; $w -lt $workers -and $queue.Count -gt 0; $w++) {
     $n = [Math]::Min($Chunk, $queue.Count)
     $batch = @($queue.GetRange(0, $n)); $queue.RemoveRange(0, $n)
-    $tag = ("{0:d4}_{1}" -f $round, $w)
+    $tag = ("{0}_{1:d4}_{2}" -f $RunTag, $round, $w)
     $jobs += Run-Chunk $batch $pool[$w] $tag $w
   }
 
